@@ -1,87 +1,75 @@
-// Constructor to create an XHR object
-function coreHTTP() {
-  this.http = new XMLHttpRequest();
-}
+/**
+ * Simplified HTTP request class using the fetch API. 
+ * The class contains get, post, put, and delete methods.
+ * The fetch API automatically generates a promise which is returned by the class, containing a response body and error state.
+ */
+class coreHTTP {
 
-/* <<< HTTP GET request >>> */
-// coreHTTP.prototype.get = function(url, callback) {
-coreHTTP.prototype.get = function(url) {
-  return new Promise((resolve, reject) => {
-    /* Open the connection */
-    this.http.open("GET", url);
-    /* Process the request when it is returned. */
-    this.http.onload = () => {
-      if (this.http.status >= 200 && this.http.status <= 299) {
-        // callback(null, this.http.responseText);
-        resolve(this.http.responseText);
-      } else {
-      // callback(`GET Error: ${this.http.status}`);
-      reject(`Get Error: ${this.http.status}:${this.http.statusText}`);
-      }
-    };
-    /* Send the request */
-    this.http.send();
-  })
-}
+  async get(url) {
 
-/* <<< HTTP POST request >>> */
-// coreHTTP.prototype.post = function(url, data, callback) {
-coreHTTP.prototype.post = function(url, data) {
-  return new Promise((resolve, reject) => {
-    this.http.open("POST", url);
-    this.http.setRequestHeader("content-type","application/json");
+    // Get request...
+    let response = await fetch(url);
 
-  this.http.onload = () => {
-    if (this.http.status >= 200 && this.http.status <= 299) {
-      // callback(null, this.http.responseText);
-      resolve(this.http.responseText);
-    } else {
-      // callback(`POST Error: ${this.http.status}`);
-      reject(`Post Error: ${this.http.status}:${this.http.statusText}`);
+    if (response.ok) {
+
+      // If the get request works, a new promise is returned which resolves as the resulting content.
+      return await response.text();
     }
-  };
+    
+    // If the get request does not work, the original promise is returned in an error state.
+    return response;
+  }
 
-  this.http.send(JSON.stringify(data));
-  })
-}
+  async post(url, data) {
 
-/* <<< HTTP PUT request >>> */
-// coreHTTP.prototype.put = function(url, data, callback) {
-coreHTTP.prototype.put = function(url, data) {
-  return new Promise((resolve, reject) => {
-    this.http.open("PUT", url);
-    this.http.setRequestHeader("content-type","application/json");
+    // Post request...
+    let response = await fetch(url, {
+      method: "POST",
+      body: data
+    });
 
-  this.http.onload = () => {
-    if (this.http.status >= 200 && this.http.status <= 299) {
-      // callback(null, this.http.responseText);
-      resolve(this.http.responseText);
-    } else {
-      // callback(`PUT Error: ${this.http.status}`);
-      reject(`Put Error: ${this.http.status}:${this.http.statusText}`);
+    if (response.ok) {
+
+      // If the post request works, a new promise is returned containing confirmation from the server.
+      return await response.text();
     }
-  };
+    
+    // If the post request does not work, the original promise is returned in an error state.
+    return response;
+  }
 
-  this.http.send(JSON.stringify(data));
-  })
-}
+  async put(url, data) {
 
-/* <<< HTTP DELETE request >>> */
-// coreHTTP.prototype.delete = function(url, callback) {
-coreHTTP.prototype.delete = function(url) {
-  return new Promise((resolve, reject) => {
-    this.http.open("DELETE", url);
-  
-    this.http.onload = () => {
-      if (this.http.status >= 200 && this.http.status <= 299) {
-        // callback(null, "User Deleted");
-        resolve("User Deleted");
-      } else {
-        // callback(`DELETE Error: ${this.http.status}`);
-        reject(`Delete Error: ${this.http.status}:${this.http.statusText}`);
-      }
+    // Put request...
+    let response = await fetch(url, {
+      method: "PUT",
+      body: data
+    });
+
+    if (response.ok) {
+
+      // If the put request works, a new promise is returned containing confirmation from the server.
+      return await response.text();
     }
+    
+    // If the put request does not work, the original promise is returned in an error state.
+    return response;
+  }
 
-    this.http.send();  
-  })
+  async delete(url) {
+
+    // Delete request...
+    let response = await fetch(url, {
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+
+      // If the delete request works, a new promise is returned containing confirmation from the server.
+      return await response.text();
+    }
+    
+    // If the delete request does not work, the original promise is returned in an error state.
+    return response;
+  }
 }
