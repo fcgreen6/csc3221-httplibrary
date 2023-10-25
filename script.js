@@ -13,19 +13,17 @@ function ProcessGet(err, res) {
 
     // The following code has not been modified from the class example.
     const users = JSON.parse(res);
-
     output = "<ul style=\"list-style:none\">";
-
     users.forEach((user) => {
       output += `<li>User ${user.id} - ${user.name}</li>`
     });
-
     output += "</ul>";
   }
-
   document.querySelector("#response").innerHTML = output;
 }
 
+/* I consolidated post, put, and delete processing into a single function because they each
+have limited response content. */
 function ProcessPostPutDelete(err, res) {
   
   let output;
@@ -64,6 +62,9 @@ async function sendRequest(reqType, targetURL) {
       username:"vickersd",
       email:"vickersd@spu.edu"};
       await http.post(targetURL, data);
+
+      /* I consolidated post, put, and delete processing into a single function because they each
+      have limited response content. */
       ProcessPostPutDelete(http.error, http.content);
       break;
     
