@@ -1,95 +1,89 @@
-// Instantiate the object
+// Instantiate the object...
 const http = new coreHTTP;
 
 function ProcessGet(err, res) {
+  
   let output;
+
   if (err) {
-    output = `<p>${err}</p>`;
+
+    // Error message is stored within response content in my class.
+    output = `<p>${res}</p>`;
   } else {
+
+    // The following code has not been modified from the class example.
     const users = JSON.parse(res);
+
     output = "<ul style=\"list-style:none\">";
+
     users.forEach((user) => {
       output += `<li>User ${user.id} - ${user.name}</li>`
-    })
+    });
+
     output += "</ul>";
   }
+
   document.querySelector("#response").innerHTML = output;
 }
 
-function ProcessPost(err, res) {
+function ProcessPostPutDelete(err, res) {
+  
   let output;
+
   if (err) {
-    output = `<p>${err}</p>`;
+    
+    // Error message is stored within response content in my class.
+    output = `<p>${res}</p>`;
   } else {
-    const user = JSON.parse(res);
-    output = "<ul style=\"list-style:none\">";
-    output += `<li>User ${user.id} - ${user.name}</li>`
-    output += "</ul>";
+    
+    // I changed this to just output the server response when data is added successfully.
+    output = `<p>Response: ${res}</p><p>(Request successful)</p>`;
   }
+
   document.querySelector("#response").innerHTML = output;
 }
 
-function ProcessPut(err, res) {
-  let output;
-  if (err) {
-    output = `<p>${err}</p>`;
-  } else {
-    const user = JSON.parse(res);
-    output = "<ul style=\"list-style:none\">";
-    output += `<li>User ${user.id} - ${user.name}</li>`
-    output += "</ul>";
-  }
-  document.querySelector("#response").innerHTML = output;
-}
-
-function ProcessDelete(err, res) {
-  let output;
-  if (err) {
-    output = `<p>${err}</p>`;
-  } else {
-    output = "<ul style=\"list-style:none\">";
-    output += `<li>${res}</li>`
-    output += "</ul>";
-  }
-  document.querySelector("#response").innerHTML = output;
-}
-
-function sendRequest(reqType, targetURL) {
+async function sendRequest(reqType, targetURL) {
+  
   let data;
+
   switch (reqType) {
-    case "get": // Get users from the endpoint
-      // http.get(targetURL, ProcessGet);
-      http.get(targetURL)
-      .then((resp) => ProcessGet(null,resp))
-      .catch((err) => ProcessGet(err));
+    
+    // Changed get syntax to support my class...
+    case "get":
+      await http.get(targetURL);
+      
+      /* Error state is stored as a data member within the class. 
+      Content contains the response body of the request. If there is an error content contains the error message. */
+      ProcessGet(http.error, http.content);
       break;
-    case "post": // Post (add) user to the endpoint
+
+    // Changed post syntax to support my class...
+    case "post":
       data = {name:"Dennis Vickers",
       username:"vickersd",
       email:"vickersd@spu.edu"};
-      // http.post(targetURL, data, ProcessPost);
-      http.post(targetURL, data)
-      .then((resp) => ProcessPost(null,resp))
-      .catch((err) => ProcessPost(err));
+      await http.post(targetURL, data);
+      ProcessPostPutDelete(http.error, http.content);
       break;
-    case "put": // Put (update) user in the endpoint
+    
+    // Changed put syntax to support my class...
+    case "put": 
       data = {id: 1,
-              name:"Professor Vickers"};
-      // http.put(targetURL, data, ProcessPut);
-      http.put(targetURL, data)
-      .then((resp) => ProcessPut(null,resp))
-      .catch((err) => ProcessPut(err));
+      name:"Professor Vickers"};
+      await http.put(targetURL, data);
+      ProcessPostPutDelete(http.error, http.content);
       break;
-    case "delete": // Delete user in the placeholder website
-      // http.delete(targetURL, ProcessDelete);
-      http.delete(targetURL)
-      .then((resp) => ProcessDelete(null,resp))
-      .catch((err) => ProcessDelete(err))
+
+    // Changed delete syntax to support my class...
+    case "delete":
+      await http.delete(targetURL);
+      ProcessPostPutDelete(http.error, http.content);
       break;            
   }
 }
 
-// Add the listener to the SEND button
+// Add the listener to the SEND button. This has not been modified from the class example.
 document.querySelector("#SendReq").addEventListener("click", (e) => {
   const radioButtons = document.querySelectorAll('input[name="HTTPtype"');
   const route = document.querySelector("#route").value;

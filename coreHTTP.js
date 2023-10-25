@@ -1,23 +1,45 @@
 /**
  * Simplified HTTP request class using the fetch API. 
  * The class contains get, post, put, and delete methods.
- * The fetch API automatically generates a promise which is returned by the class, containing a response body and error state.
+ * When a request is called, the class first identifies the error state of the response from the server.
+ * If there is no error, the class content data member becomes the server response body.
+ * If there is an error, the class content data member becomes an error message containing the response status.
+ * 
+ * Data members:
+ * error: Boolean value which contains the error state of the current request.
+ * content: String value containing the response from the server or an error message if the request failed.
  */
 class coreHTTP {
 
   async get(url) {
 
-    // Get request...
-    let response = await fetch(url);
+    // I noticed that get requests act strange when no URL is provided. I had to create my own error message for this.
+    if (url !== "") {
 
-    if (response.ok) {
+      // Get request...
+      let response = await fetch(url);
+      
+      // Check if there was an error with the request.
+      if (response.ok) {
 
-      // If the get request works, a new promise is returned which resolves as the resulting content.
-      return await response.text();
+        // Content is set to the response from the server. No error.
+        this.error = false;
+        this.content = await response.text();
+        
+      }
+      else {
+
+        // If there is an error, an error message is created as content.
+        this.error = true;
+        this.content = `Error: [Status: ${response.status}]`;
+      }
     }
-    
-    // If the get request does not work, the original promise is returned in an error state.
-    return response;
+    else {
+
+      // If there is an error, an error message is created as content.
+      this.error = true;
+      this.content = `Error: No URL provided.`;
+    }
   }
 
   async post(url, data) {
@@ -28,14 +50,19 @@ class coreHTTP {
       body: data
     });
 
+    // Check if there was an error with the request.
     if (response.ok) {
 
-      // If the post request works, a new promise is returned containing confirmation from the server.
-      return await response.text();
+      // Content is set to the response from the server. No error.
+      this.error = false;
+      this.content = await response.text();
     }
-    
-    // If the post request does not work, the original promise is returned in an error state.
-    return response;
+    else {
+
+      // If there is an error, an error message is created as content.
+      this.error = true;
+      this.content = `Error: [Status: ${response.status}]`;
+    }
   }
 
   async put(url, data) {
@@ -46,14 +73,19 @@ class coreHTTP {
       body: data
     });
 
+    // Check if there was an error with the request.
     if (response.ok) {
 
-      // If the put request works, a new promise is returned containing confirmation from the server.
-      return await response.text();
+      // Content is set to the response from the server. No error.
+      this.error = false;
+      this.content = await response.text();
     }
-    
-    // If the put request does not work, the original promise is returned in an error state.
-    return response;
+    else {
+
+      // If there is an error, an error message is created as content.
+      this.error = true;
+      this.content = `Error: [Status: ${response.status}]`;
+    }
   }
 
   async delete(url) {
@@ -63,13 +95,18 @@ class coreHTTP {
       method: "DELETE",
     });
 
+    // Check if there was an error with the request.
     if (response.ok) {
 
-      // If the delete request works, a new promise is returned containing confirmation from the server.
-      return await response.text();
+      // Content is set to the response from the server. No error.
+      this.error = false;
+      this.content = await response.text();
     }
-    
-    // If the delete request does not work, the original promise is returned in an error state.
-    return response;
+    else {
+
+      // If there is an error, an error message is created as content.
+      this.error = true;
+      this.content = `Error: [Status: ${response.status}]`;
+    }
   }
 }
