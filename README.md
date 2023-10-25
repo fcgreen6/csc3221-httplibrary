@@ -5,7 +5,7 @@ coreHTTP.js:
 - If there is an error, the request content is updated to contain an error message related to status.
 
 script.js:
-- I have changed script.js to reflect the use of class data members.
+- I have updated script.js to reflect the use of class data members.
 - Specific Changes:
   - Changed the output of successful post, put, and delete requests. The user interface will output any confirmation returned from the server and display a success message.
   - Consolidated post, put, and delete request processing into a single function to reduce redundancy.
